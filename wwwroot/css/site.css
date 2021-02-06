@@ -1,0 +1,47 @@
+﻿textarea {
+    resize: unset;
+}
+
+.total-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+    .total-wrapper > *:not(:last-child) {
+        border-bottom: 1px solid #0000001a;
+        padding: 10px 0;
+    }
+
+.sub, .total {
+    display: flex;
+    justify-content: space-between;
+}
+
+.discount-wrapper {
+    display: flex;
+}
+
+.discount {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    margin-left: 10px;
+}
+
+.discount-list {
+    border: 1px solid #c1c1c1;
+}
+
+    .discount-list > :first-child {
+        border-right: 1px solid #c1c1c1;
+    }
+
+    .discount-list > * {
+        padding: 3px 10px;
+        display: inline-block;
+    }
+
+.total {
+    margin-top: 10px;
+    font-weight: bold;
+}

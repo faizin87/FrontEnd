@@ -1,0 +1,304 @@
+﻿@model Freelancer.Models.MasterViewModel.BillAddModel
+
+<div class="logo mb-2">
+    <div class="row">
+        <div class="col-4">
+            <h5>Paid Bill</h5>
+        </div>
+        <div class="col-4 offset-4">
+            <img id="myImg" src="~/images/ms.jpg" width="200">
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-7">
+        <div class="border p-1">
+            <span>Please find attached your invoice. Thank you for timely payment</span>
+        </div>
+    </div>
+</div>
+
+<form id="crud-form" class="bill mt-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-2">
+                    <label>Invoice No.</label>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <input type="text" class="form-control" name="Number" value="@Model.Number" placeholder="Invoice" readonly>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-7 offset-3">
+                    <div class="row">
+                        <div class="col-5">
+                            <label>Language</label>
+                            <select name="LanguangeId" class="custom-select mr-sm-2">
+                                @foreach (var item in Model.Languanges)
+                                {
+                                    <option value="@item.LanguangeId">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-7">
+                            <label>Currency</label>
+                            <select name="CurrencyId" id="CurrencyId" onchange="myCurrency()" class="custom-select mr-sm-2">
+                                @foreach (var item in Model.Currencies)
+                                {
+                                    <option value="@item.CurrencyId">@item.Name - @item.Code</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <label>From</label>
+                            <textarea name="From" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label>To</label>
+                            <select name="DestinationId" id="DestinationId" onchange="myDestiny()" class="custom-select mr-sm-2">
+                                @foreach (var item in Model.Destinations)
+                                {
+                                    <option value="@item.DestinationId">@item.Name</option>
+                                }
+                            </select>
+                            <p id="destinationDetail"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 offset-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <label>Date</label>
+                            <input type="text" name="Date" class="form-control datepicker-here datetime-input" data-language="en" placeholder="Date" />
+                        </div>
+                        <div class="col-12">
+                            <label>Invoice Due</label>
+                            <input name="InvoiceDue" id="InvoiceDue" type="text" class="form-control" />
+                        </div>
+                        <div class="col-12">
+                            <label>Purchase Order Number</label>
+                            <select name="PurchaseOrderId" class="custom-select mr-sm-2">
+                                @foreach (var item in Model.Purchases)
+                                {
+                                    <option value="@item.PurchaseOrderId">@item.Code - @item.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div id="bill-wrapper">
+                <div class="row">
+                    <div class="col-5">
+                        <label>Name</label>
+                        <textarea class="form-control" name="Name"></textarea>
+                    </div>
+                    <div class="col-2">
+                        <label>Quantity</label>
+                        <input type="text" class="form-control" name="Quantity" onkeypress="return isNumberKey(event)" onchange="myQty()" id="Quantity" />
+                    </div>
+                    <div class="col-2">
+                        <label>Rate</label>
+                        <div class="row justify-content-end">
+                            <div class="col-12">
+                                <input type="text" class="form-control" name="Rate" onkeypress="return isNumberKey(event)" onchange="myQty()" id="Rate" />
+                            </div>
+                            <div class="col-9 mt-1">
+                                <select name="MeasurementId" class="custom-select mr-sm-2">
+                                    @foreach (var item in Model.Measurements)
+                                    {
+                                        <option value="@item.MeasurementId">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <label>Amount</label>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-white"><label id="currencyCode">USD</label></div>
+                            </div>
+                            <input type="text" class="form-control bg-white" name="Amount" placeholder="Invoice" id="Amount" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="addBill()">New Line</a>
+            <div class="row">
+                <div class="col-4 offset-8">
+                    <div class="total-wrapper">
+                        <div class="sub">
+                            <span>Sub Total</span>
+                            <span>150.00</span>
+                        </div>
+                        <div class="discount-wrapper">
+                            <div class="discount">
+                                <div class="discount-list">
+                                    <input type="text" class="form-control" name="DiscountName" placeholder="Discount Name">
+                                    <input type="text" class="form-control" name="Discount" placeholder="Discount" onkeypress="return isNumberKey(event)" onchange="myDiscount()" id="Discount" />
+
+                                </div>
+                                <label id="Discountlbl">00.00</label>
+                                <input type="hidden" id="Discount" name="Discount" />
+                            </div>
+                        </div>
+                        <div class="total">
+                            <span>Total (<label id="currencyCodeTotal">USD</label>)</span>
+                            <label id="Totallbl">00.00</label>
+                            <input type="hidden" name="Total" id="Total" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="actionDo()">Save Bill</a>
+        </div>
+    </div>
+</form>
+
+<script>
+    function myQty() {
+        var a = document.getElementById("Quantity");
+        var b = document.getElementById("Rate");
+        var q = 0;
+        var r = 0;
+        if (a !== null && a !== '') {
+            q = a.value;
+        }
+        if (b !== null && b !== '') {
+            r = b.value;
+        }
+        var result = q * r;
+        document.getElementById("Amount").value = result.toFixed(2);
+        myDiscount();
+    }
+    function myDiscount() {
+        var a = document.getElementById("Discount");
+        var b = document.getElementById("Amount");
+        var q = 0;
+        var r = 0;
+        if (a !== null && a !== '' && b !== null && b !== '') {
+            q = b.value - (a.value / 100 * b.value);
+            r = (a.value / 100 * b.value);
+        }
+        document.getElementById("Totallbl").innerHTML = q.toFixed(2);
+        document.getElementById("Discountlbl").innerHTML = r.toFixed(2);
+        document.getElementById("Total").value = q.toFixed(2);
+    }
+    function myCurrency() {
+        var x = document.getElementById("CurrencyId").value;
+        $.ajax({
+            type: 'GET',
+            url: '/Home/GetCurrency/?id=' + x,
+            success: function (rs) {
+                document.getElementById("currencyCode").innerHTML = rs;
+                document.getElementById("currencyCodeTotal").innerHTML = rs;
+            }
+        });
+    }
+    function myDestiny() {
+        var x = document.getElementById("DestinationId").value;
+        $.ajax({
+            type: 'GET',
+            url: '/Home/GetDestination/?id=' + x,
+            success: function (rs) {
+                console.log(rs);
+                document.getElementById("destinationDetail").innerHTML = rs.detail;
+                document.getElementById("myImg").src = rs.logo;
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+    function actionDo(t, url, type) {
+        var data_ = $("form#crud-form").serialize();
+        $.ajax({
+            type: "POST",
+            url: "Home/Create",
+            data: data_,
+            success: function (rs) {
+                alert(rs);
+                location.reload();
+            }
+        });
+    }
+    function addBill() {
+        var bill = '<div class="row">' +
+            '<div class="col-12 text-right">' +
+            '<a class="btn btn-danger btn-sm" href="javascript:void(0)" onclick="deleteBill(this)">delete</a>' +
+            '</div>' +
+            '<div class="col-5" >' +
+            '<label>Name</label>' +
+            '<textarea class="form-control"></textarea>' +
+            '</div>' +
+            '<div class="col-2">' +
+            '<label>Quantity</label>' +
+            '<input type="text" class="form-control" />' +
+            '</div>' +
+            '<div class="col-2">' +
+            '<label>Rate</label>' +
+            '<div class="row justify-content-end">' +
+            '<div class="col-12">' +
+            '<input type="text" class="form-control" />' +
+            '</div>' +
+            '<div class="col-9 mt-1">' +
+            '<select class="custom-select mr-sm-2">' +
+            '<option selected>Choose..</option>' +
+            '<option value="1">hr</option>' +
+            '</select>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="col-3">' +
+            '<label>Amount</label>' +
+            '<div class="input-group mb-2">' +
+            '<div class="input-group-prepend">' +
+            '<div class="input-group-text bg-white">USD</div>' +
+            '</div>' +
+            '<input type="text" class="form-control bg-white" placeholder="Invoice" value="150.00" readonly>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+        $('#bill-wrapper').append(bill);
+    }
+    function deleteBill(t) {
+        $(t).parent().parent().remove();
+    }
+
+    function deleteDiscount(t) {
+        $(t).parent().remove();
+    }
+    $(document).ready(() => {
+        $('.datetime-input').datepicker({
+            autoClose: true,
+            minDate: new Date(),
+            onSelect: function (dateText) {
+                var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime();
+                var selected = new Date(dateText).getTime();
+                if (today < selected) document.getElementById("InvoiceDue").value = dateText;
+                else document.getElementById("InvoiceDue").value = "Immedietly";
+            }
+        });
+    })
+</script>
